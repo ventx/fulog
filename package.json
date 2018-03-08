@@ -1,0 +1,28 @@
+{
+  "name": "fulog",
+  "version": "0.0.1",
+  "description": "A log collection daemon, which offers a fuse endpoint.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "fuse",
+    "log",
+    "collection",
+    "daemon",
+    "docker",
+    "container"
+  ],
+  "author": "Wolfgang Felbermeier <wolfgang@ventx.de>",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.205.0",
+    "cdi": "0.0.3",
+    "fuse-bindings": "^2.11.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.3"
+  }
+}
