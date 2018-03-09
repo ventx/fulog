@@ -3,11 +3,15 @@
  */
 class FuseManager {
 
-	constructor(mountPoints) {
+	constructor(objectManager, mountPoints) {
 		this.mountPoints = mountPoints;
+		this.fuseWrappers = this.mountPoints.map(mp => {
+			objectManager.getInstance('FuseDriver', mp);
+		});
 	}
+
 
 }
 
 module.exports = FuseManager;
-module.exports.inject = ['config:fuse:mountPoints'];
+module.exports.inject = ['ObjectManager', 'config:fuse:mountPoints'];
