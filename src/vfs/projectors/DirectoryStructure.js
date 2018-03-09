@@ -11,6 +11,7 @@ class DirectoryStructure extends AbstractProjector {
 		super('directory');
 		this.structure = {};
 		this.attrList = {};
+		this.loadEventStream();
 	}
 
 	directoryCreated({path, mode}) {
