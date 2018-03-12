@@ -12,12 +12,16 @@ class FuseWrapper {
 	}
 
 	createDirectory(path, mode, cb) {
-		console.log("create path:", path);
-
 		this.eventStorage.commit('DirectoryCreated', path, mode).then(() => {
-			console.log("finished and called callback");
 			cb(0)
 		});
+	}
+
+	removeDirectory(path, cb) {
+		this.eventStorage.commit('DirectoryRemoved', path).then(() => {
+			console.log("removed dir, calling callback");
+			cb(0);
+		})
 	}
 
 	getDirectoryContent(path, cb) {

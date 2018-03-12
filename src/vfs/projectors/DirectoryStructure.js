@@ -24,6 +24,14 @@ class DirectoryStructure extends AbstractProjector {
 		dotProp.set(this.structure, path.slice(1).replace(/\//g, '.'), {});
 	}
 
+	directoryRemoved({path}) {
+		if(path === '/') {
+			this.structure = {};
+		}
+		dotProp.delete(this.structure, path.slice(1).replace(/\//g, '.'));
+		delete this.attrList[path];
+	}
+
 	getPathAttr(path) {
 		return this.attrList[path];
 	}

@@ -42,7 +42,7 @@ class FuseDriver {
 			},
 
 			getattr(path, cb) {
-				console.log('getattr');
+				console.log('getattr:', path);
 				if (path === '/') {
 					cb(0, {
 						mtime: new Date(),
@@ -224,7 +224,7 @@ class FuseDriver {
 
 			rmdir(path, cb) {
 				console.log('rmdir');
-				cb(0);
+				fuseWrapper.removeDirectory(path, cb);
 			},
 			destroy(cb) {
 				console.log('destroy');
