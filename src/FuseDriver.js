@@ -5,10 +5,11 @@ class FuseDriver {
 	/**
 	 *
 	 * @param {FuseWrapper} fuseWrapper
+	 * @param {FileDescriptorMap} fileDescriptorMap
 	 */
-	constructor(fuseWrapper) {
-		this.fuseWrapper = fuseWrapper;
+	constructor(fuseWrapper, fileDescriptorMap) {
 		this.mountPoint = module.exports.tree;
+		this.fileDescriptorMap = fileDescriptorMap;
 		this.mount(this.mountPoint, fuseWrapper);
 	}
 
@@ -18,6 +19,7 @@ class FuseDriver {
 	 * @param {FuseWrapper} fuseWrapper
 	 */
 	mount(mointPoint, fuseWrapper) {
+		let _this = this;
 		let options = {
 			init(cb) {
 				console.log('init');
@@ -76,17 +78,6 @@ class FuseDriver {
 					cb(0, def);
 					return;
 				}
-				console.log("file not found:", path);
-				/*cb(0, {
-					mtime: new Date(),
-					atime: new Date(),
-					ctime: new Date(),
-					nlink: 1,
-					size: 100,
-					mode: 16877,
-					uid: process.getuid ? process.getuid() : 0,
-					gid: process.getgid ? process.getgid() : 0
-				});*/
 				cb(fuse.ENOENT);
 			},
 
@@ -175,12 +166,12 @@ class FuseDriver {
 
 			open(path, flags, cb) {
 				console.log('open');
-				cb(0, 1);
+				cb(0, _this.fileDescriptorMap.requestDescriptor(path, flags));
 			},
 
 			opendir(path, flags, cb) {
 				console.log('opendir');
-				cb(0);
+				cb(0, _this.fileDescriptorMap.requestDescriptor(path, flags));
 			},
 
 			read(path, fd, buffer, length, position, cb) {
@@ -269,4 +260,4 @@ class FuseDriver {
 }
 
 module.exports = FuseDriver;
-module.exports.inject = ['FuseWrapper'];
+module.exports.inject = ['FuseWrapper', 'FileDescriptorMap'];
