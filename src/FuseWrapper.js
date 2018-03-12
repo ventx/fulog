@@ -59,6 +59,10 @@ class FuseWrapper {
 		this.eventStorage.commit('FileUnlinked', path).then(() => cb(0));
 	}
 
+	renameFile(source, destination, cb) {
+		this.eventStorage.commit('FileRenamed', source, destination).then(() => cb(0));
+	}
+
 }
 
 module.exports = FuseWrapper;

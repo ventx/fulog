@@ -19,7 +19,7 @@ class Mount {
 		dotProp.delete(this.structure, path.slice(1).replace(/\//g, '.'));
 	}
 
-	renameTreeEntra(oldPath, newPath) {
+	renameTreeEntry(oldPath, newPath) {
 		dotProp.set(this.structure,
 			newPath.slice(1).replace(/\//g, '.'),
 			dotProp.get(this.structure, oldPath.slice(1).replace(/\//g, '.'))

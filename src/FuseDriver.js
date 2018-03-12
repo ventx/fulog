@@ -209,9 +209,9 @@ class FuseDriver {
 				fuseWrapper.unlinkFile(path, cb);
 			},
 
-			rename(src, dest, cb) {
+			rename(src, dst, cb) {
 				console.log('rename');
-				cb(0);
+				fuseWrapper.renameFile(src, dst, cb);
 			},
 
 			link(src, dest, cb) {
