@@ -8,14 +8,20 @@ const FileTypes = require('../helper/FileTypes');
  */
 class DirectoryStructure extends AbstractProjector {
 
-	constructor() {
-		super('directory');
+	/**
+	 *
+	 * @param {Mount} mount
+	 */
+	constructor(mount) {
+		super(['directory']);
 		this.structure = {};
 		this.attrList = {};
-		this.loadEventStream();
+		this.mount = mount;
+		this.loadEventStreams();
 	}
 
 	directoryCreated({path, mode}) {
+		this.mount.createTreeEntry(path);
 		if(!this.attrList[path]) {
 			this.attrList[path] = {mode: mode + FileTypes.DIRECTORY};
 		} else {
@@ -25,6 +31,7 @@ class DirectoryStructure extends AbstractProjector {
 	}
 
 	directoryRemoved({path}) {
+		this.mount.removeTreeEntry(path);
 		if(path === '/') {
 			this.structure = {};
 		}
@@ -46,3 +53,4 @@ class DirectoryStructure extends AbstractProjector {
 }
 
 module.exports = DirectoryStructure;
+module.exports.inject = ['Mount'];

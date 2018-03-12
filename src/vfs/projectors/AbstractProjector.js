@@ -4,23 +4,25 @@ class AbstractProjector {
 
 	/**
 	 * @param {EventStorage} eventStorage
-	 * @param streamName
+	 * @param streamNames
 	 */
-	constructor(eventStorage, streamName) {
+	constructor(eventStorage, streamNames) {
 		this._id = uuid();
 		this.eventStorage = eventStorage;
-		this.streamName = streamName;
+		this.streamNames = streamNames;
 	}
 
-	loadEventStream() {
-		let stream = this.eventStorage.getEventStore().getEventStream(this.streamName);
-		if(!stream) {
-			this.eventStorage.getEventStore().createEventStream(this.streamName, () => true);
-		}
-		let consumer = this.eventStorage.getEventStore().getConsumer(this.streamName, this._id);
-		consumer.on('data', event => {
-			this.applyEvent(event);
-		});
+	loadEventStreams() {
+		this.streamNames.forEach(streamName => {
+			let stream = this.eventStorage.getEventStore().getEventStream(streamName);
+			if(!stream) {
+				this.eventStorage.getEventStore().createEventStream(streamName, () => true);
+			}
+			let consumer = this.eventStorage.getEventStore().getConsumer(streamName, this._id);
+			consumer.on('data', event => {
+				this.applyEvent(event);
+			});
+		})
 	}
 
 	/**
@@ -28,7 +30,6 @@ class AbstractProjector {
 	 * @param {AbstractEvent} event
 	 */
 	applyEvent(event) {
-		console.log("apply Event:", event);
 		let targetMethod = event.__eventName.charAt(0).toLowerCase() + event.__eventName.slice(1);
 		if (this[targetMethod]) {
 			this[targetMethod](event);

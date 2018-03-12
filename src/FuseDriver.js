@@ -12,6 +12,11 @@ class FuseDriver {
 		this.mount(this.mountPoint, fuseWrapper);
 	}
 
+	/**
+	 *
+	 * @param mointPoint
+	 * @param {FuseWrapper} fuseWrapper
+	 */
 	mount(mointPoint, fuseWrapper) {
 		let options = {
 			init(cb) {
@@ -71,6 +76,17 @@ class FuseDriver {
 					cb(0, def);
 					return;
 				}
+				console.log("file not found:", path);
+				/*cb(0, {
+					mtime: new Date(),
+					atime: new Date(),
+					ctime: new Date(),
+					nlink: 1,
+					size: 100,
+					mode: 16877,
+					uid: process.getuid ? process.getuid() : 0,
+					gid: process.getgid ? process.getgid() : 0
+				});*/
 				cb(fuse.ENOENT);
 			},
 
@@ -119,7 +135,7 @@ class FuseDriver {
 
 			readlink(path, cb) {
 				console.log('readlink');
-				cb(null, 'file.txt');
+				fuseWrapper.readSymlink(path, cb);
 			},
 
 			chown(path, uid, gid, cb) {
@@ -199,7 +215,7 @@ class FuseDriver {
 
 			unlink(path, cb) {
 				console.log('unlink');
-				cb(0);
+				fuseWrapper.unlinkFile(path, cb);
 			},
 
 			rename(src, dest, cb) {
@@ -213,8 +229,8 @@ class FuseDriver {
 			},
 
 			symlink(src, dest, cb) {
-				console.log('symlink');
-				cb(0);
+				console.log('symlink:', src, dest);
+				fuseWrapper.createSymlink(src, dest, cb);
 			},
 
 			mkdir(path, mode, cb) {
