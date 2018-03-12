@@ -1,7 +1,7 @@
 class AbstractEvent {
 
-	constructor(streamName) {
-		this._streamName = streamName;
+	constructor(streamNames) {
+		this._streamNames = streamNames;
 	}
 
 }

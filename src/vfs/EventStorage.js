@@ -15,8 +15,10 @@ class EventStorage {
 		return new Promise((resolve, reject) => {
 			let event = eventWrapper(name, ...args);
 			event.__eventName = event.constructor.name;
-			this.eventstore.commit(event._streamName, event, () => {
-				resolve();
+			event._streamNames.forEach(streamName => {
+				this.eventstore.commit(streamName, event, () => {
+					resolve();
+				});
 			});
 		});
 	}
