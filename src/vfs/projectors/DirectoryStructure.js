@@ -1,5 +1,6 @@
 const AbstractProjector = require('./AbstractProjector');
 const dotProp = require('dot-prop');
+const FileTypes = require('../helper/FileTypes');
 
 /**
  * Represents a directory structure. One of these is created for each fulog managed directory.
@@ -15,13 +16,12 @@ class DirectoryStructure extends AbstractProjector {
 	}
 
 	directoryCreated({path, mode}) {
-		console.log("projector has seen:", path, mode);
 		if(!this.attrList[path]) {
-			this.attrList[path] = {mode};
+			this.attrList[path] = {mode: mode + FileTypes.DIRECTORY};
 		} else {
-			this.attrList[path].mode = mode;
+			this.attrList[path].mode = mode + FileTypes.DIRECTORY;
 		}
-		dotProp.set(this.structure, path.slice(1).replace(/\//g, '.'));
+		dotProp.set(this.structure, path.slice(1).replace(/\//g, '.'), {});
 	}
 
 	getPathAttr(path) {
