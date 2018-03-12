@@ -13,7 +13,7 @@ class DirectoryStructure extends AbstractProjector {
 	 * @param {Mount} mount
 	 */
 	constructor(mount) {
-		super(['directory']);
+		super(['directory', 'fs']);
 		this.structure = {};
 		this.attrList = {};
 		this.mount = mount;
@@ -37,6 +37,21 @@ class DirectoryStructure extends AbstractProjector {
 		}
 		dotProp.delete(this.structure, path.slice(1).replace(/\//g, '.'));
 		delete this.attrList[path];
+	}
+
+	fileRenamed({source, destination}) {
+		console.log('structure:', JSON.stringify(this.structure));
+		if(dotProp.get(this.structure, source.slice(1).replace(/\//g, '.'))) {
+			console.log("rename dir:", source, destination);
+			this.mount.renameTreeEntry(source, destination);
+			dotProp.set(this.structure,
+				destination.slice(1).replace(/\//g, '.'),
+				dotProp.get(this.structure, source.slice(1).replace(/\//g, '.'))
+			);
+			dotProp.delete(this.structure, source.slice(1).replace(/\//g, '.'));
+			this.attrList[destination] = this.attrList[source];
+			delete this.attrList[source];
+		}
 	}
 
 	getPathAttr(path) {
