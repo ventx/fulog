@@ -15,16 +15,24 @@ class Symlinks extends AbstractProjector {
 		this.loadEventStreams();
 	}
 
-	symlinkCreated({source, destination}){
+	symlinkCreated({source, destination}) {
 		console.log("new symlink:", source, destination);
 		this.mount.createTreeEntry(destination);
 		this.symlinks[destination] = source;
 	}
 
-	fileUnlinked({path}){
-		if(this.symlinks[path]) {
+	fileUnlinked({path}) {
+		if (this.symlinks[path]) {
 			this.mount.removeTreeEntry(path);
 			delete this.symlinks[path];
+		}
+	}
+
+	fileRenamed({source, destination}) {
+		if (this.symlinks[source]) {
+			this.mount.renameTreeEntry(source, destination);
+			this.symlinks[destination] = this.symlinks[source];
+			delete this.symlinks[source];
 		}
 	}
 
@@ -33,7 +41,7 @@ class Symlinks extends AbstractProjector {
 	}
 
 	getPathAttr(path) {
-		if(this.symlinks[path]) {
+		if (this.symlinks[path]) {
 			return {
 				mode: FileTypes.SYM_LINK + 0o777
 			}
